@@ -72,7 +72,7 @@ func Crawl() {
 	jobChan := make(chan string, DownloadChanLength)
 	resultChan := make(chan string, DownloadChanLength)
 	defer close(resultChan)
-	for i := 0; i < 300; i++ {
+	for i := 0; i < 100; i++ {
 		go worker(jobChan, resultChan)
 	}
 
