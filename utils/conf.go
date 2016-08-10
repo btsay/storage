@@ -45,7 +45,7 @@ func initConfig() {
 		Elastic  string `json:"elastic"`
 	}
 
-	f, err := os.Open("config/crawl.conf")
+	f, err := os.Open("config/storage.conf")
 	exit(err)
 	b, err := ioutil.ReadAll(f)
 	exit(err)
