@@ -19,8 +19,7 @@ func Crawl() {
 	worker := func(jobs <-chan string, resultChan chan<- string) {
 		crawl := newCrawl()
 		for infohash := range jobs {
-			if !Manager.crawStatus[Xunlei].pauseCrawl ||
-				!Manager.crawStatus[Torcache].pauseCrawl {
+			if !Manager.crawStatus[Xunlei].pauseCrawl {
 				//至少有一个引擎在服务时，直接删除即可，防止引擎都不服务时，疯狂删数据
 				resultChan <- infohash
 			}
@@ -36,37 +35,14 @@ func Crawl() {
 					} else {
 						Manager.crawStatus[Xunlei].refuseCount++
 					}
-					//报错，如果torcache在服务，进入torcache流程，否则进入下一循环
-					if !Manager.crawStatus[Torcache].pauseCrawl {
-						goto tocache
-					} else {
-						continue
-					}
+					continue
 				} else {
 					//没报错，进入存储流程
 					goto store
 				}
 			}
 
-		tocache:
-			if !Manager.crawStatus[Torcache].pauseCrawl && !Manager.crawStatus[Torcache].stopCrawl {
-				// bg := time.Now()
-				data, err = parser.DownloadTorcache(infohash, crawl.torcacheClient)
-				if err != nil {
-					if err == parser.ErrNotFound {
-						Manager.crawStatus[Torcache].notFoundCount++
-					} else {
-						Manager.crawStatus[Torcache].refuseCount++
-					}
-					//报错，进入下一循环
-					continue
-				}
-			} else {
-				continue
-			}
-
-			if Manager.crawStatus[Torcache].pauseCrawl &&
-				Manager.crawStatus[Xunlei].pauseCrawl {
+			if Manager.crawStatus[Xunlei].pauseCrawl {
 				//预防引擎都没有服务时，直接进入下一循环
 				continue
 			}
@@ -113,12 +89,10 @@ func Crawl() {
 	}()
 
 	for {
-		if (Manager.crawStatus[Xunlei].pauseCrawl || Manager.crawStatus[Xunlei].stopCrawl) &&
-			Manager.crawStatus[Torcache].pauseCrawl {
+		if Manager.crawStatus[Xunlei].pauseCrawl || Manager.crawStatus[Xunlei].stopCrawl {
 			utils.Log().Println("全部引擎拒绝服务,暂停抓取,等待10分钟")
 			time.Sleep(time.Minute * 10)
 			Manager.crawStatus[Xunlei] = &crawStatus{}
-			Manager.crawStatus[Torcache] = &crawStatus{}
 		}
 
 		var pres []torrent.PreInfohash

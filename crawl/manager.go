@@ -11,7 +11,6 @@ import (
 const (
 	DownloadChanLength = 256
 	Xunlei             = "xunlei"
-	Torcache           = "torcache"
 )
 
 //Manager spider
@@ -21,7 +20,6 @@ func (p *manager) run() {
 	p.initChan()
 	p.crawStatus = make(map[string]*crawStatus)
 	p.crawStatus[Xunlei] = &crawStatus{}
-	p.crawStatus[Torcache] = &crawStatus{}
 	go p.monitor()
 }
 
@@ -51,11 +49,6 @@ func (p *manager) monitor() {
 			for k, v := range p.crawStatus {
 				if k == Xunlei {
 					if (v.notFoundCount-v.preNotFoundCount)/5 < (v.refuseCount - v.preRefuseCount) {
-						v.pauseCrawl = true
-						v.pauseTime = time.Now()
-					}
-				} else if k == Torcache {
-					if (v.notFoundCount - v.preNotFoundCount) < (v.refuseCount - v.preRefuseCount) {
 						v.pauseCrawl = true
 						v.pauseTime = time.Now()
 					}

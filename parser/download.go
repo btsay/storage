@@ -4,11 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	// "io"
-	// "io/ioutil"
 	"net/http"
-
-	// "github.com/btlike/storage/utils"
 )
 
 //define address
