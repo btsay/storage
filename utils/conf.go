@@ -16,10 +16,10 @@ var Config config
 type config struct {
 	Log           *log.Logger
 	Database      string
+	EnableProxy   bool
+	ProxyAddress  string
 	Engine        *xorm.Engine
 	ElasticClient *elastic.Client
-	RedisHost     string
-	RedisDb       int32
 }
 
 //Log return logger
@@ -43,6 +43,10 @@ func initConfig() {
 	type config struct {
 		Database string `json:"database"`
 		Elastic  string `json:"elastic"`
+		Proxy    struct {
+			Enable  bool   `json:"enable"`
+			Address string `json:"address"`
+		} `json:"proxy"`
 	}
 
 	f, err := os.Open("config/storage.conf")
@@ -53,6 +57,8 @@ func initConfig() {
 	err = json.Unmarshal(b, &c)
 	exit(err)
 
+	Config.EnableProxy = c.Proxy.Enable
+	Config.ProxyAddress = c.Proxy.Address
 	Config.Database = c.Database
 	client, err := elastic.NewClient(elastic.SetURL(c.Elastic))
 	exit(err)

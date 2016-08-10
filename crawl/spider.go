@@ -17,7 +17,11 @@ func Run() {
 //Crawl from xunlei ...
 func Crawl() {
 	worker := func(jobs <-chan string, resultChan chan<- string) {
-		crawl := newCrawl()
+		crawl, err := newCrawl()
+		if err != nil {
+			utils.Log().Printf("设置了代理，但代理地址错误：", err)
+			return
+		}
 		for infohash := range jobs {
 			if !Manager.crawStatus[Xunlei].pauseCrawl {
 				//至少有一个引擎在服务时，直接删除即可，防止引擎都不服务时，疯狂删数据
