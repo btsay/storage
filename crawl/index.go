@@ -13,12 +13,7 @@ type torrentSearch struct {
 	CreateTime time.Time
 }
 
-//IndexManager manage search
-var IndexManager indexManager
-
-type indexManager struct{}
-
-func (p *indexManager) add(metaInfo parser.MetaInfo) (err error) {
+func createElasticIndex(metaInfo parser.MetaInfo) (err error) {
 	if metaInfo.InfoHash == "" ||
 		metaInfo.Info.Name == "" ||
 		metaInfo.Info.Length == 0 {

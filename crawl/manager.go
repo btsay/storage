@@ -44,27 +44,25 @@ type manager struct {
 }
 
 func (p *manager) monitor() {
-	go func() {
-		for {
-			for k, v := range p.crawStatus {
-				if k == Xunlei {
-					if (v.notFoundCount-v.preNotFoundCount)/5 < (v.refuseCount - v.preRefuseCount) {
-						v.pauseCrawl = true
-						v.pauseTime = time.Now()
-					}
+	for {
+		for k, v := range p.crawStatus {
+			if k == Xunlei {
+				if (v.notFoundCount-v.preNotFoundCount)/5 < (v.refuseCount - v.preRefuseCount) {
+					v.pauseCrawl = true
+					v.pauseTime = time.Now()
 				}
-				v.preNotFoundCount = v.notFoundCount
-				v.preRefuseCount = v.refuseCount
-
-				//释放被暂停的服务
-				if time.Now().Sub(v.pauseTime).Minutes() >= 10 {
-					v.pauseCrawl = false
-				}
-
-				utils.Log().Printf("%s未找到数量:%v,拒绝数量:%v\n", k, v.notFoundCount, v.refuseCount)
 			}
-			utils.Log().Println("此次运行已存储数量:", p.storeCount)
-			time.Sleep(time.Minute)
+			v.preNotFoundCount = v.notFoundCount
+			v.preRefuseCount = v.refuseCount
+
+			//释放被暂停的服务
+			if time.Now().Sub(v.pauseTime).Minutes() >= 10 {
+				v.pauseCrawl = false
+			}
+
+			utils.Log().Printf("%s未找到数量:%v,拒绝数量:%v\n", k, v.notFoundCount, v.refuseCount)
 		}
-	}()
+		utils.Log().Println("此次运行已存储数量:", p.storeCount)
+		time.Sleep(time.Minute)
+	}
 }

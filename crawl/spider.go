@@ -59,7 +59,7 @@ func Crawl() {
 			}
 
 			//全文索引
-			err = IndexManager.add(data)
+			err = createElasticIndex(data)
 			if err != nil {
 				utils.Log().Println(err)
 			}
