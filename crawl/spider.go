@@ -31,7 +31,7 @@ func Crawl() {
 			var data parser.MetaInfo
 			var err error
 
-			if !Manager.crawStatus[Xunlei].pauseCrawl && !Manager.crawStatus[Xunlei].stopCrawl {
+			if !Manager.crawStatus[Xunlei].pauseCrawl {
 				data, err = parser.DownloadXunlei(infohash, crawl.xunleiClient)
 				if err != nil {
 					if err == parser.ErrNotFound {
@@ -93,7 +93,7 @@ func Crawl() {
 	}()
 
 	for {
-		if Manager.crawStatus[Xunlei].pauseCrawl || Manager.crawStatus[Xunlei].stopCrawl {
+		if Manager.crawStatus[Xunlei].pauseCrawl {
 			utils.Log().Println("全部引擎拒绝服务,暂停抓取,等待10分钟")
 			time.Sleep(time.Minute * 10)
 			Manager.crawStatus[Xunlei] = &crawStatus{}

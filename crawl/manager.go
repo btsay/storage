@@ -33,7 +33,6 @@ type crawStatus struct {
 	refuseCount   int64
 
 	pauseCrawl bool
-	stopCrawl  bool
 	pauseTime  time.Time
 }
 
