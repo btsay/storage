@@ -24,7 +24,7 @@ func createElasticIndex(metaInfo parser.MetaInfo) (err error) {
 		Length:     metaInfo.Info.Length,
 		CreateTime: time.Now(),
 	}
-	_, err = utils.Config.ElasticClient.Index().
+	_, err = utils.ElasticClient.Index().
 		Index("torrent").
 		Type("infohash").
 		Id(metaInfo.InfoHash).

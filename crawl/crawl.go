@@ -13,9 +13,9 @@ type crawl struct {
 }
 
 func newCrawl() (c crawl, err error) {
-	if utils.Config.EnableProxy {
+	if utils.Config.Proxy.Enable {
 		var proxyURL *url.URL
-		proxyURL, err = url.Parse(utils.Config.ProxyAddress)
+		proxyURL, err = url.Parse(utils.Config.Proxy.Address)
 		if err != nil {
 			return
 		}

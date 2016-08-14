@@ -6,25 +6,25 @@ import (
 	"log"
 	"os"
 
-	"github.com/go-xorm/xorm"
+	"github.com/btlike/repository"
 	"gopkg.in/olivere/elastic.v3"
 )
 
 //Config define config
-var Config config
+var (
+	Config        config
+	Log           *log.Logger
+	ElasticClient *elastic.Client
+	Repository    repository.Repository
+)
 
 type config struct {
-	Log           *log.Logger
-	Database      string
-	EnableProxy   bool
-	ProxyAddress  string
-	Engine        *xorm.Engine
-	ElasticClient *elastic.Client
-}
-
-//Log return logger
-func Log() *log.Logger {
-	return Config.Log
+	Database string `json:"database"`
+	Elastic  string `json:"elastic"`
+	Proxy    struct {
+		Enable  bool   `json:"enable"`
+		Address string `json:"address"`
+	} `json:"proxy"`
 }
 
 //Init utilsl
@@ -36,19 +36,13 @@ func Init() {
 }
 
 func initElastic() {
-	Config.ElasticClient.CreateIndex("torrent").Do()
+	client, err := elastic.NewClient(elastic.SetURL(Config.Elastic))
+	exit(err)
+	ElasticClient = client
+	ElasticClient.CreateIndex("torrent").Do()
 }
 
 func initConfig() {
-	type config struct {
-		Database string `json:"database"`
-		Elastic  string `json:"elastic"`
-		Proxy    struct {
-			Enable  bool   `json:"enable"`
-			Address string `json:"address"`
-		} `json:"proxy"`
-	}
-
 	f, err := os.Open("config/storage.conf")
 	exit(err)
 	b, err := ioutil.ReadAll(f)
@@ -56,31 +50,20 @@ func initConfig() {
 	var c config
 	err = json.Unmarshal(b, &c)
 	exit(err)
-
-	Config.EnableProxy = c.Proxy.Enable
-	Config.ProxyAddress = c.Proxy.Address
-	Config.Database = c.Database
-	client, err := elastic.NewClient(elastic.SetURL(c.Elastic))
-	exit(err)
-	Config.ElasticClient = client
 }
 
 func initLog() {
-	Config.Log = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
+	Log = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 func initDatabase() {
-	engine, err := xorm.NewEngine("mysql", Config.Database)
-	if err != nil {
-		panic(err)
-	}
-	engine.SetMaxIdleConns(1000)
-	engine.SetMaxOpenConns(1000)
-	Config.Engine = engine
+	repo, err := repository.NewMysqlRepository(Config.Database, 1024, 1024)
+	exit(err)
+	Repository = repo
 }
 
 func exit(err error) {
 	if err != nil {
-		Log().Fatalln(err)
+		Log.Fatalln(err)
 	}
 }

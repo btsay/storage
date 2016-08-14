@@ -59,9 +59,9 @@ func (p *manager) monitor() {
 				v.pauseCrawl = false
 			}
 
-			utils.Log().Printf("%s未找到数量:%v,拒绝数量:%v\n", k, v.notFoundCount, v.refuseCount)
+			utils.Log.Printf("%s未找到数量:%v,拒绝数量:%v\n", k, v.notFoundCount, v.refuseCount)
 		}
-		utils.Log().Println("此次运行已存储数量:", p.storeCount)
+		utils.Log.Println("此次运行已存储数量:", p.storeCount)
 		time.Sleep(time.Minute)
 	}
 }

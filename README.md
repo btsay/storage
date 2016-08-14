@@ -22,7 +22,7 @@
 
 ```
 {
-  "database": "root:password@tcp(127.0.0.1:3306)/torrent?charset=utf8", //数据库地址
+  "database": "root:password@tcp(127.0.0.1:3306)/torrent?charset=utf8&parseTime=True&loc=Local", //数据库地址
   "elastic": "http://127.0.0.1:9200", //elasticsearch地址
   "proxy": {
     "enable": false, //是否开启代理
@@ -51,4 +51,3 @@ func main() {
     log.Fatal(http.ListenAndServe(":8090", proxy))
 }
 ```
-

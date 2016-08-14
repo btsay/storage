@@ -3,7 +3,6 @@ package crawl
 import (
 	"time"
 
-	"github.com/btlike/database/torrent"
 	"github.com/btlike/storage/parser"
 	"github.com/btlike/storage/utils"
 )
@@ -19,7 +18,7 @@ func Crawl() {
 	worker := func(jobs <-chan string, resultChan chan<- string) {
 		crawl, err := newCrawl()
 		if err != nil {
-			utils.Log().Printf("设置了代理，但代理地址错误：", err)
+			utils.Log.Printf("设置了代理，但代理地址错误：", err)
 			return
 		}
 		for infohash := range jobs {
@@ -61,7 +60,7 @@ func Crawl() {
 			//全文索引
 			err = createElasticIndex(data)
 			if err != nil {
-				utils.Log().Println(err)
+				utils.Log.Println(err)
 			}
 
 			resultChan <- infohash
@@ -82,10 +81,10 @@ func Crawl() {
 			if len(infohash) == 40 {
 				infohashs = append(infohashs, infohash)
 				if len(infohashs) >= 100 {
-					_, err := utils.Config.Engine.In("infohash", infohashs).Delete(&torrent.PreInfohash{})
+					err := utils.Repository.BatchDeleteInfohash(infohashs)
 					infohashs = make([]string, 0)
 					if err != nil {
-						utils.Log().Println("delete error", err)
+						utils.Log.Println("delete error", err)
 					}
 				}
 			}
@@ -94,15 +93,14 @@ func Crawl() {
 
 	for {
 		if Manager.crawStatus[Xunlei].pauseCrawl {
-			utils.Log().Println("全部引擎拒绝服务,暂停抓取,等待10分钟")
+			utils.Log.Println("全部引擎拒绝服务,暂停抓取,等待10分钟")
 			time.Sleep(time.Minute * 10)
 			Manager.crawStatus[Xunlei] = &crawStatus{}
 		}
 
-		var pres []torrent.PreInfohash
-		err := utils.Config.Engine.OrderBy("id").Limit(1000, 0).Find(&pres)
+		pres, err := utils.Repository.BatchGetInfohash(1000)
 		if err != nil {
-			utils.Log().Println(err)
+			utils.Log.Println(err)
 			time.Sleep(time.Second * 10)
 			continue
 		}
@@ -111,7 +109,7 @@ func Crawl() {
 			time.Sleep(time.Second * 60)
 		}
 		for _, v := range pres {
-			jobChan <- v.Infohash
+			jobChan <- v
 		}
 	}
 }

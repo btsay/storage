@@ -1,10 +1,8 @@
 package parser
 
 import (
-	// "errors"
 	"fmt"
 	"io"
-	"time"
 
 	"github.com/btlike/bencode-go"
 )
@@ -59,39 +57,6 @@ func (metaInfo *MetaInfo) Parse(r io.Reader) (err error) {
 	}
 	// metaInfo.DumpTorrentMetaInfo()
 	return err
-}
-
-//DumpTorrentMetaInfo Print torrent meta info struct data.
-func (metaInfo *MetaInfo) DumpTorrentMetaInfo() {
-	fmt.Println("Announce:", metaInfo.Announce)
-	fmt.Println("Announce List:")
-	for _, anncListEntry := range metaInfo.AnnounceList {
-		for _, elem := range anncListEntry {
-			fmt.Println("    ", elem)
-		}
-	}
-	strCreationDate := time.Unix(metaInfo.CreationDate, 0)
-	fmt.Println("Creation Date:", strCreationDate)
-	fmt.Println("Comment:", metaInfo.Comment)
-	fmt.Println("Created By:", metaInfo.CreatedBy)
-	fmt.Println("Encoding:", metaInfo.Encoding)
-	fmt.Printf("InfoHash: %X\n", metaInfo.InfoHash)
-	fmt.Println("Info:")
-	fmt.Println("    Piece Length:", metaInfo.Info.PieceLength)
-	piecesList := metaInfo.getPiecesList()
-	fmt.Printf("    Pieces:%X -- %X\n", len(piecesList), len(metaInfo.Info.Pieces)/20)
-	fmt.Println("    File Duration:", metaInfo.Info.FileDuration)
-	fmt.Println("    File Media:", metaInfo.Info.FileMedia)
-	fmt.Println("    Private:", metaInfo.Info.Private)
-	fmt.Println("    Name:", metaInfo.Info.Name)
-	fmt.Println("    Length:", metaInfo.Info.Length)
-	fmt.Println("    Md5sum:", metaInfo.Info.Md5sum)
-	fmt.Println("    Files:")
-	for _, fileDict := range metaInfo.Info.Files {
-		fmt.Println("        Length:", fileDict.Length)
-		fmt.Println("        Path:", fileDict.Path)
-		fmt.Println("        Md5sum:", fileDict.Md5sum)
-	}
 }
 
 // Splits pieces string into an array of 20 byte SHA1 hashes.
