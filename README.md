@@ -1,7 +1,7 @@
 ## Storage
 [![Build Status](https://drone.io/github.com/btlike/storage/status.png)](https://drone.io/github.com/btlike/storage/latest)
 
-根据infohash从xunlei和torcache获取torrent metadata存储到数据库，同时增加搜索引擎全文索引
+根据infohash从xunlei等资源站点获取torrent metadata存储到数据库，同时增加搜索引擎全文索引
 
 
 
