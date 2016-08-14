@@ -47,8 +47,7 @@ func initConfig() {
 	exit(err)
 	b, err := ioutil.ReadAll(f)
 	exit(err)
-	var c config
-	err = json.Unmarshal(b, &c)
+	err = json.Unmarshal(b, &Config)
 	exit(err)
 }
 
