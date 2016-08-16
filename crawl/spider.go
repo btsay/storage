@@ -18,7 +18,7 @@ func Crawl() {
 	worker := func(jobs <-chan string, resultChan chan<- string) {
 		crawl, err := newCrawl()
 		if err != nil {
-			utils.Log.Printf("设置了代理，但代理地址错误：", err)
+			utils.Log.Printf("设置了代理，但代理地址错误：%v\n", err)
 			return
 		}
 		for infohash := range jobs {

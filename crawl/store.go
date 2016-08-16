@@ -50,7 +50,7 @@ func Store(data parser.MetaInfo) (err error) {
 			if len(tmpFiles) >= 5 {
 				t.Files = append(t.Files, tmpFiles[:5]...)
 			} else {
-				t.Files = append(t.Files, tmpFiles[:len(tmpFiles)]...)
+				t.Files = append(t.Files, tmpFiles[:]...)
 			}
 		} else {
 			for _, v := range data.Info.Files {
