@@ -1,6 +1,7 @@
 package crawl
 
 import (
+	"strings"
 	"time"
 
 	"github.com/btlike/storage/parser"
@@ -24,9 +25,10 @@ func createElasticIndex(metaInfo parser.MetaInfo) (err error) {
 		Length:     metaInfo.Info.Length,
 		CreateTime: time.Now(),
 	}
+	indexType := strings.ToLower(string(metaInfo.InfoHash[0]))
 	_, err = utils.ElasticClient.Index().
 		Index("torrent").
-		Type("infohash").
+		Type(indexType).
 		Id(metaInfo.InfoHash).
 		BodyJson(data).
 		Refresh(false).
