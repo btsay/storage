@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/btlike/storage/utils"
+	"github.com/btsay/storage/utils"
 )
 
 type crawl struct {

@@ -3,8 +3,8 @@ package crawl
 import (
 	"time"
 
-	"github.com/btlike/storage/parser"
-	"github.com/btlike/storage/utils"
+	"github.com/btsay/storage/parser"
+	"github.com/btsay/storage/utils"
 )
 
 //Run the spider
