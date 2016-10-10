@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/btsay/bencode-go"
+	"github.com/jackpal/bencode-go"
 )
 
 // FileDict into which torrent metafile is

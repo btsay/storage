@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/btsay/repository"
-	"gopkg.in/olivere/elastic.v3"
 )
 
 //Config define config
