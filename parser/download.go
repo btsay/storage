@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 //define address
@@ -16,7 +17,7 @@ const (
 //define errors
 var (
 	ErrNotFound = errors.New("not found")
-	LibUrls []string = []string{
+	LibUrls     = []string{
 		"http://www.torrent.org.cn/Home/torrent/download.html?hash=%s",
 		"http://torcache.net/torrent/%s.torrent",
 		"http://torrage.com/torrent/%s.torrent",
@@ -83,7 +84,7 @@ func DownloadTorrent(hash string, client *http.Client) (mi MetaInfo, err error) 
 		req0, err := http.NewRequest("GET", address, nil)
 		if err != nil {
 			continue
-		}	
+		}
 		resp, err := client.Do(req0)
 		if err != nil {
 			continue
@@ -105,7 +106,7 @@ func DownloadTorrent(hash string, client *http.Client) (mi MetaInfo, err error) 
 			}
 		}
 	}
-	return	
+	return
 }
 
 func pretty(v interface{}) {
