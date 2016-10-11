@@ -18,13 +18,14 @@ const (
 var (
 	ErrNotFound = errors.New("not found")
 	LibUrls     = []string{
-		"http://www.torrent.org.cn/Home/torrent/download.html?hash=%s",
-		"http://torcache.net/torrent/%s.torrent",
-		"http://torrage.com/torrent/%s.torrent",
-		"http://zoink.it/torrent/%s.torrent",
-		"https://178.73.198.210/torrent/%s.torrent",
-		"http://d1.torrentkittycn.com/?infohash=%s",
-		"http://reflektor.karmorra.info/torrent/%s.torrent",
+		// "http://www.torrent.org.cn/Home/torrent/download.html?hash=%s",
+		// "http://torcache.net/torrent/%s.torrent",
+		// "http://torrage.com/torrent/%s.torrent",
+		// "http://zoink.it/torrent/%s.torrent",
+		// "https://178.73.198.210/torrent/%s.torrent",
+		// "http://d1.torrentkittycn.com/?infohash=%s",
+		// "http://reflektor.karmorra.info/torrent/%s.torrent",
+		"http://itorrents.org/torrent/%s.torrent",
 	}
 )
 
@@ -71,11 +72,11 @@ func DownloadTorrent(hash string, client *http.Client) (mi MetaInfo, err error) 
 		err = errors.New("invalid hash len")
 		return
 	}
-	mi, err = DownloadXunlei(hash, client)
-	//迅雷解析成功，不用再調用後面的種子庫
-	if err == nil {
-		return
-	}
+	// mi, err = DownloadXunlei(hash, client)
+	// //迅雷解析成功，不用再調用後面的種子庫
+	// if err == nil {
+	// 	return
+	// }
 
 	mi.InfoHash = hash
 	//將來改用字典實現
