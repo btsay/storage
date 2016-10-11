@@ -5,13 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 //define address
 const (
 	Xunlei   = "http://bt.box.n0808.com/%s/%s/%s.torrent"
 	Torcache = "https://torcache.net/torrent/%s.torrent"
+	Itorrent = "http://itorrents.org/torrent/%s.torrent"
 )
 
 //define errors
@@ -66,7 +66,7 @@ func DownloadXunlei(hash string, client *http.Client) (mi MetaInfo, err error) {
 	return
 }
 
-//Download torrent
+//DownloadTorrent
 func DownloadTorrent(hash string, client *http.Client) (mi MetaInfo, err error) {
 	if len(hash) != 40 {
 		err = errors.New("invalid hash len")
@@ -80,31 +80,31 @@ func DownloadTorrent(hash string, client *http.Client) (mi MetaInfo, err error) 
 
 	mi.InfoHash = hash
 	//將來改用字典實現
-	for _, lib_url := range LibUrls {
-		address := fmt.Sprintf(lib_url, strings.ToUpper(hash))
-		req0, err := http.NewRequest("GET", address, nil)
-		if err != nil {
-			continue
-		}
-		resp, err := client.Do(req0)
-		if err != nil {
-			continue
-		}
-		if resp != nil {
-			defer func() {
-				// io.Copy(ioutil.Discard, resp.Body)
-				resp.Body.Close()
-			}()
 
-			if resp.StatusCode == 200 {
-				//解析种子
-				err = mi.Parse(resp.Body)
-				return mi, err
-			} else if resp.StatusCode == 404 {
-				err = ErrNotFound
-			} else {
-				err = errors.New("refuse error")
-			}
+	address := fmt.Sprintf(Itorrent, hash)
+	req0, err := http.NewRequest("GET", address, nil)
+	req0.Header.Set("User-Agent", "Mozilla/5.0")
+	if err != nil {
+		return
+	}
+	resp, err := client.Do(req0)
+	if err != nil {
+		return
+	}
+	if resp != nil {
+		defer func() {
+			// io.Copy(ioutil.Discard, resp.Body)
+			resp.Body.Close()
+		}()
+
+		if resp.StatusCode == 200 {
+			//解析种子
+			err = mi.Parse(resp.Body)
+			return mi, err
+		} else if resp.StatusCode == 404 {
+			err = ErrNotFound
+		} else {
+			err = errors.New("refuse error")
 		}
 	}
 	return
