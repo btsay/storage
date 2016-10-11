@@ -33,7 +33,6 @@ func Crawl() {
 			if !Manager.crawStatus[Xunlei].pauseCrawl {
 				data, err = parser.DownloadTorrent(infohash, crawl.xunleiClient)
 				if err != nil {
-					utils.Log.Println(err)
 					if err == parser.ErrNotFound {
 						Manager.crawStatus[Xunlei].notFoundCount++
 					} else {
