@@ -98,7 +98,7 @@ func DownloadTorrent(hash string, client *http.Client) (mi MetaInfo, err error) 
 			if resp.StatusCode == 200 {
 				//解析种子
 				err = mi.Parse(resp.Body)
-				return
+				return mi, err
 			} else if resp.StatusCode == 404 {
 				err = ErrNotFound
 			} else {
